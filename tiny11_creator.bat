@@ -21,6 +21,10 @@ echo Mounting install image...
 dism /Mount-Image /ImageFile:"%InstDir%\sources\install.wim" /Index:%Index% /MountDir:"%TinyDir%"
 call :ShowResult
 
+echo Applying Tweaks
+call :ApplyTweak install_patches.reg
+call :ShowResult
+
 echo Removing Edge...
 call :ForceRemove "%TinyDir%\Program Files (x86)\Microsoft\Edge"
 call :ForceRemove "%TinyDir%\Program Files (x86)\Microsoft\EdgeUpdate"
@@ -107,10 +111,6 @@ echo Removing Wallpapers...
 call :RemovePackage "%TinyDir%" "Wallpaper"
 call :ShowResult
 
-echo Applying Tweaks
-call :ApplyTweak install_patches.reg
-call :ShowResult
-
 echo Cleaning install image...
 dism /Image:"%TinyDir%" /Cleanup-Image /StartComponentCleanup /ResetBase
 echo Unmounting install image...
@@ -182,7 +182,7 @@ reg LOAD HKLM\zNTUSER "%TinyDir%\Users\Default\NTUSER.DAT"
 reg LOAD HKLM\zSOFTWARE "%TinyDir%\Windows\System32\config\SOFTWARE"
 reg LOAD HKLM\zSYSTEM "%TinyDir%\Windows\System32\config\SYSTEM"
 echo Patching registry...
-reg IMPORT "%~1"
+regedit /s "%~1"
 echo Unloading Hives...
 reg UNLOAD HKLM\zDEFAULT
 reg UNLOAD HKLM\zNTUSER
